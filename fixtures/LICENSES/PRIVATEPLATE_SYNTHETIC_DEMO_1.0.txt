@@ -1,0 +1,11 @@
+PrivatePlate synthetic fixture review notice
+
+Copyright (c) 2026 PrivatePlate contributors. All rights reserved.
+
+The files under fixtures/ are synthetic demonstration data. They are not real
+household records, measured clinical nutrition data, or medical advice.
+
+Public redistribution rights have not yet been granted. Provenance review and
+the final data-license choice must be completed before this repository is made
+public. This notice is intentionally temporary and is not an open-source or
+open-data license.
