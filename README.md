@@ -1,137 +1,275 @@
 # PrivatePlate
 
-PrivatePlate is a conversation-first household meal coordination Agent designed
-for smart-fridge screens and home hubs. A family member tells it who is eating,
-what should be used first, and what should be avoided. The Agent considers
-inventory, household preferences, dietary constraints, and the day's meal state
-in the background, then returns the result people actually need: a meal plan,
-preparation status, and a shopping or household task list.
+**面向智能冰箱屏幕与家庭中枢的对话式家庭餐食协调 Agent。**
 
-The product goal is to reduce the mental load of managing family meals. Health
-profiles and nutrition budgets are internal planning inputs, not a dashboard the
-household must supervise all day.
+PrivatePlate 希望解决的不是“今天推荐吃什么”，而是家庭每天都在重复面对的餐食协调问题：
 
-## What the runnable prototype includes
+> 谁吃饭？冰箱里什么该先用？谁有什么不能吃？上一顿已经吃了什么？缺什么要买？最后谁来准备？
 
-- Multi-turn Chinese conversation for planning and revising a family meal.
-- Household members, inventory, preferences, constraints, and a cross-meal day ledger.
-- Deterministic nutrition calculation and safety guardrails behind the Agent.
-- Confirmation before durable writes or household-task creation.
-- A result workspace that appears after the user's meal intent is clear.
-- Browser microphone and refrigerator-photo intake with editable drafts.
-- SQLite persistence, session checkpoints, and a small local RAG corpus.
-- Public scripted evaluations for tool choice, parameters, privacy, and lifecycle safety.
+家庭成员可以直接用自然语言提出需求，例如“今晚三个人吃饭，把快过期的菜先用了，妈妈不要辣”。
 
-This repository is a browser-based device simulator. It does not claim direct
-integration with refrigerator sensors, wake words, appliance control, grocery
-ordering, or an external messaging service. Photo and voice results require user
-review. Nutrition values are engineering estimates for demonstration and are not
-medical advice.
+PrivatePlate 会在后台结合家庭成员、库存、饮食偏好与限制、当天餐食状态等信息，通过 Agent 完成上下文读取、工具调用和方案调整，再由确定性的领域逻辑执行营养计算、安全检查、库存与状态处理，最终给出真正可以执行的结果，而不是只返回一段聊天文本。
 
-The files under `fixtures/` are AI-assisted synthetic demo data created
-specifically for PrivatePlate. They do not redistribute real household records,
-clinical datasets, measured nutrition databases, or third-party food datasets.
-See `fixtures/PROVENANCE.md` for the provenance boundary.
+本仓库是为 **GOAI 比赛**整理的独立可运行版本，包含 PrivatePlate 当前可公开、可验证的核心实现。
 
-## Architecture
+## 核心能力
+
+当前仓库中的可运行原型已经包含：
+
+- **多轮中文对话规划**：支持生成家庭餐食方案，并根据后续要求继续修改。
+- **家庭上下文建模**：管理家庭成员、偏好、饮食限制、库存以及跨餐次的当天状态。
+- **Agent 工具调用**：模型通过结构化工具读取上下文、查询库存、寻找候选菜品、生成方案、检索知识和预览后续操作。
+- **确定性营养计算**：营养数值和规则判断由领域代码完成，不依赖 LLM 自行计算。
+- **安全约束与隐私边界**：健康标签、营养档案等敏感规划信息保留在服务端，家庭共享屏幕只接收必要的展示信息。
+- **确认后写入**：库存修改、成员记忆、餐食完成状态以及家庭任务等持久化操作均经过预览与确认边界。
+- **当天餐食账本**：已完成的餐食可以进入 day ledger，影响后续餐次的规划上下文。
+- **购物缺口计算**：根据最终方案和现有库存计算缺失食材。
+- **家庭任务交接**：可以生成面向家庭照护者或执行者的最小必要信息任务卡。
+- **语音输入**：浏览器端支持麦克风输入，并在使用前保留用户确认与编辑空间。
+- **冰箱照片录入**：支持通过图片生成库存草稿，由用户检查后再进入正式状态。
+- **SQLite 持久化**：保存家庭状态、库存、会话 checkpoint、待确认操作等数据。
+- **本地 RAG**：支持通过独立的 OpenAI-compatible embedding endpoint 检索本地知识语料。
+- **自动化评测**：仓库包含针对工具选择、参数、安全、隐私和多轮生命周期的公开 scripted evaluation。
+
+## 一次完整的工作流程
 
 ```text
-Browser conversation UI
-        │ HTTP + SSE
-        ▼
-Express server ── Agent runtime ── OpenAI-compatible model on loopback
-        │              │
-        │              └── typed tools + confirmation boundary
-        ▼
-Domain service ── SQLite / inventory / day ledger / demo nutrition rules
-        │
-        └── local RAG embedding endpoint on loopback (optional)
+用户：
+“今晚三个人吃，把快过期的先用了，妈妈不要辣”
+                    │
+                    ▼
+             PrivatePlate Agent
+                    │
+        ┌───────────┴───────────┐
+        ▼                       ▼
+   读取家庭上下文             查询当前库存
+        │                       │
+        └───────────┬───────────┘
+                    ▼
+             搜索可行菜品组合
+                    │
+                    ▼
+        确定性规则 / 营养 / 安全检查
+                    │
+                    ▼
+                生成方案
+                    │
+          用户继续修改或确认
+                    │
+                    ▼
+      库存 / 餐食状态 / 家庭任务写入
 ```
 
-The browser receives a reduced display projection. Detailed health tags and
-nutrition profiles remain server-side inputs. The shared screen receives only
-names, roles, safe execution cues, inventory facts, and confirmed result data.
+LLM 负责理解用户意图、选择工具以及组织规划过程。
 
-## Requirements
+库存计算、营养计算、安全约束、状态变更和持久化等需要稳定结果的部分，则由代码中的确定性逻辑负责。
 
-- Node.js 22.13 or newer
+## 架构
+
+```text
+浏览器设备界面（React / Vite）
+              │
+          HTTP + SSE
+              ▼
+       Express Server
+              │
+              ▼
+         Agent Runtime
+              │
+     OpenAI-compatible 模型
+       127.0.0.1:8000
+              │
+              ▼
+     Typed Tools + Confirmation
+              │
+              ▼
+        Domain Service
+       ┌──────┼────────┐
+       ▼      ▼        ▼
+    SQLite   库存    Day Ledger
+       │
+       └───────────────┐
+                       ▼
+                 本地 RAG（可选）
+              embedding endpoint
+               127.0.0.1:8001
+```
+
+浏览器拿到的并不是完整家庭档案，而是经过裁剪后的展示数据。
+
+详细健康标签、营养档案和规划输入保留在服务端，家庭共享屏幕只显示姓名、角色、安全的执行提示、库存事实以及已确认的结果。
+
+## 仓库结构
+
+```text
+PrivatePlate/
+├── apps/
+│   ├── web/               # React / Vite 浏览器界面与设备模拟器
+│   └── server/            # Express API、SSE、媒体输入与会话边界
+│
+├── packages/
+│   ├── agent-runtime/     # Agent loop、工具路由、验证、确认流程
+│   ├── contracts/         # 共享 Schema 与数据契约
+│   ├── domain/            # 家庭、库存、规划、营养、账本、RAG 与 SQLite
+│   └── evals/             # 自动化评测 runner、schema 与 scorer
+│
+├── fixtures/
+│   ├── household/         # 合成家庭数据
+│   ├── foods/             # Demo 食物数据
+│   ├── meal-templates/    # 餐食模板
+│   ├── knowledge/         # 本地 RAG 知识语料
+│   └── evals/             # 公开评测案例
+│
+└── scripts/
+    ├── rag/               # 本地 embedding / RAG 辅助脚本
+    └── c1/                # fixture 校验工具
+```
+
+## 运行要求
+
+- Node.js **22.13 或更高版本**
 - npm
-- An OpenAI-compatible chat model endpoint on `127.0.0.1:8000`
-- Optional OpenAI-compatible embedding endpoint on `127.0.0.1:8001`
+- 一个运行在 `127.0.0.1:8000` 的 OpenAI-compatible Chat Model endpoint
+- 可选：一个运行在 `127.0.0.1:8001` 的 OpenAI-compatible Embedding endpoint
 
-Model weights and production food databases are not included.
+模型权重和生产环境食品数据库不包含在本仓库中。
 
-## Run locally
+## 本地运行
 
-Install dependencies:
+安装依赖：
 
 ```bash
 npm ci
 ```
 
-Create your local configuration:
+创建本地配置：
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env`, then load it into the current terminal:
+编辑 `.env` 后加载环境变量：
 
 ```bash
 set -a; source .env; set +a
 ```
 
-Start the API in one terminal:
+启动服务端：
 
 ```bash
 npm run dev:server
 ```
 
-Start the web app in another terminal after loading the same `.env`:
+在另一个终端加载相同 `.env` 后启动前端：
 
 ```bash
 npm run dev:web
 ```
 
-Open `http://127.0.0.1:5173`.
+打开：
 
-The application only accepts loopback model endpoints. A loopback URL may still
-terminate in an SSH tunnel. Strict on-device privacy is true only when the chat
-model, embedding model, server, and SQLite database all run on the household
-device. A remote self-hosted model must be disclosed as remote processing.
+```text
+http://127.0.0.1:5173
+```
 
-## Verify
+## 验证
+
+运行完整检查：
 
 ```bash
 npm run check
 ```
 
-The test suite uses `ScriptedProductProvider` as a deterministic test double.
-Passing tests proves code paths and safety contracts; it does not prove the
-quality of any particular real model.
+或者运行 GOAI 对应检查：
 
-## Public/private boundary
+```bash
+npm run check:goai
+```
 
-This clean repository contains the public core: browser and server applications,
-Agent orchestration, domain contracts, generic nutrition guardrails, AI-assisted
-synthetic demo fixtures, and evaluation scaffolding.
+检查流程覆盖：
 
-Production data, real user or household data, private evaluation material,
-commercial integrations, model weights, and internal working documents are not
-part of this repository. See [OPEN_SOURCE_SCOPE.md](OPEN_SOURCE_SCOPE.md) for the
-current boundary.
+- workspace 构建
+- contracts 测试
+- domain 测试
+- Agent runtime 测试
+- server 测试
+- web 测试
+- public eval v2
+- TypeScript typecheck
+- `git diff --check`
+
+测试环境使用 `ScriptedProductProvider` 作为确定性的模型替身。
+
+因此，通过测试能够证明代码路径、数据契约以及安全边界按预期工作，但不代表任何具体真实模型的生成质量已经由这些测试证明。
+
+## 当前 Demo 的能力边界
+
+这个仓库运行的是一个**浏览器中的智能冰箱 / 家庭中枢设备模拟器**。
+
+当前版本并没有声称已经直接接入：
+
+- 真实冰箱传感器
+- 唤醒词硬件
+- 家电控制
+- 自动下单或真实生鲜采购平台
+- 外部即时通讯服务
+
+语音与照片识别得到的内容也不会被视为绝对可靠的事实，而是需要用户检查的输入草稿。
+
+Demo 中的营养数值属于工程演示数据与规则，不构成医疗建议。
+
+### 关于“本地运行”
+
+应用仅接受 loopback 模型地址（默认 `127.0.0.1:8000`，可选 embedding 为 `127.0.0.1:8001`）。如果这些地址实际通过 SSH tunnel 指向远程模型，则仍属于远程计算；只有模型、服务端与 SQLite 都实际运行在家庭设备本机时，才属于严格意义上的设备端本地处理。
+
+## Demo 数据
+
+`fixtures/` 中的数据是专门为 PrivatePlate 原型创建的 **AI-assisted synthetic demo data**。
+
+其中不包含：
+
+- 真实家庭记录
+- 真实用户数据
+- 临床数据集
+- 实测营养数据库
+- 第三方食品数据库的重新分发内容
+
+数据来源与生成边界见：
+
+- `fixtures/PROVENANCE.md`
+- `fixtures/MANIFEST.json`
+
+## 公开范围
+
+这个仓库是从原始开发项目整理出的 clean export，而不是原始 Git 历史的完整副本。
+
+当前包含的是能够独立运行 PrivatePlate Demo 所需的核心代码，包括：
+
+- 浏览器应用
+- 服务端
+- Agent orchestration
+- 数据契约
+- 领域规划逻辑
+- 通用营养与安全规则
+- 合成 Demo fixtures
+- 公开评测框架
+
+生产食品数据库、真实用户数据、私有 regression/evaluation 数据、模型权重、商业集成、内部执行文档以及比赛提交素材不包含在本仓库中。
+
+详细边界见 [`OPEN_SOURCE_SCOPE.md`](OPEN_SOURCE_SCOPE.md)。
 
 ## License
 
-PrivatePlate source code **present in this repository** is licensed under the
-[Apache License 2.0](LICENSE).
+本仓库中实际包含的 PrivatePlate 源代码采用：
 
-AI-assisted synthetic demonstration data under `fixtures/` is dedicated under
-[CC0 1.0 Universal](DATA_LICENSE.md). The full CC0 legal code is included at
-`fixtures/LICENSES/CC0-1.0.txt`.
+**Apache License 2.0**
 
-These licenses do not grant rights to PrivatePlate materials that are not
-included in this repository, such as production datasets, real user data,
-private evaluation assets, model weights, or future private integrations.
-Third-party dependencies and model runtimes keep their own licenses and terms;
-see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+见 [`LICENSE`](LICENSE)。
+
+`fixtures/` 下的 AI-assisted synthetic demonstration data 采用：
+
+**CC0 1.0 Universal**
+
+见 [`DATA_LICENSE.md`](DATA_LICENSE.md) 和 `fixtures/LICENSES/CC0-1.0.txt`。
+
+第三方依赖和模型运行时仍遵循各自的许可证与使用条款，详见 [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)。
