@@ -33,137 +33,99 @@ PrivatePlate 会在后台结合家庭成员、库存、饮食偏好与限制、�
 
 ## 一次完整的工作流程
 
-```text
-用户提出需求
-自然语言 / 语音 / 冰箱照片
-              │
-              ▼
-      Conversation-first UI
-          React / Vite
-              │
-          HTTP + SSE
-              ▼
-        Express Server
-     Session / API Boundary
-              │
-              ▼
-        Agent Runtime
-  理解当前轮次与会话状态
-              │
-              ├───────────────┐
-              ▼               │
-      OpenAI-compatible       │
-         Chat Model           │
-     理解意图 / 选择工具       │
-              │               │
-              └──── tool call ┘
-                      │
-                      ▼
-               Typed Tool Gateway
-                9 Model-visible Tools
-                      │
-          ┌───────────┼───────────┐
-          ▼           ▼           ▼
-      家庭上下文      当前库存     本地知识检索
-      Day Ledger     候选餐食      Local RAG
-          └───────────┼───────────┘
-                      ▼
-               Domain Service
-        确定性规划 / 营养计算 / 安全约束
-                      │
-                      ▼
-                  餐食方案
-                      │
-                      ▼
-             Agent 组织最终回复
-                      │
-                      ▼
-              用户继续调整？
-                │           │
-               是           否
-                │           │
-                └──回到 Agent│
-                            ▼
-                  是否涉及状态写入？
-                     │        │
-                    否        是
-                     │        │
-                     ▼        ▼
-                  直接返回   Preview
-                              │
-                              ▼
-                         用户确认
-                              │
-                              ▼
-                            Commit
-                              │
-              ┌───────────────┼────────────────┐
-              ▼               ▼                ▼
-            SQLite         Day Ledger        Inventory /
-                                             Member Memory /
-                                             Task Board
-                              │
-                              ▼
-                     更新后的家庭状态
-                              │
-                              └────进入下一轮对话
+```mermaid
+flowchart TD
+  User["用户提出家庭餐食需求<br/>文字 · 语音 · 冰箱照片"]
+  Agent["Agent Runtime<br/>读取会话状态 · 编排当前轮次"]
+  Model["Chat Model<br/>理解意图 · 选择工具 · 组织回复"]
+  Tools["Typed Tool Gateway<br/>9 model-visible tools"]
+  Domain["Deterministic Domain<br/>家庭上下文 · 库存 · 营养 · 硬约束 · 方案校验"]
+  Plan["可执行餐食方案"]
+  Revise{"用户还要调整吗？"}
+  Write{"是否涉及持久化操作？"}
+  Return["返回当前结果"]
+  Preview["生成 Preview<br/>尚未写入状态"]
+  Confirm{"用户确认？"}
+  Commit["Deterministic Commit"]
+  State["SQLite · Day Ledger · Inventory<br/>Member Memory · Household Task Board"]
+  Next["更新后的家庭状态<br/>进入下一轮对话"]
+
+  User --> Agent
+  Agent -->|"prompt + state"| Model
+  Model -->|"tool request / final answer"| Agent
+  Agent --> Tools
+  Tools --> Domain
+  Domain -->|"tool result"| Agent
+  Agent -->|"plan ready"| Plan
+  Plan --> Revise
+  Revise -->|"是"| Agent
+  Revise -->|"否"| Write
+  Write -->|"否"| Return
+  Return --> Next
+  Write -->|"是"| Preview
+  Preview --> Confirm
+  Confirm -->|"否，继续调整"| Agent
+  Confirm -->|"是"| Commit
+  Commit --> State
+  State --> Next
 ```
 
-LLM 负责理解用户意图、选择工具以及组织规划过程。
+LLM 负责理解用户意图、选择工具以及组织规划过程；确定性的 Domain 负责营养计算、硬约束、库存与状态处理。
 
-库存计算、营养计算、安全约束、状态变更和持久化等需要稳定结果的部分，则由代码中的确定性逻辑负责。
+需要写入家庭状态的动作不会由模型直接提交，而是先生成 Preview，经过用户确认后才进入确定性的 Commit 路径。更新后的状态会成为下一轮对话的新上下文。
 
 ## 架构
 
-```text
-                     ┌─────────────────────────────┐
-                     │   Conversation-first UI     │
-                     │ React / Vite · Voice · Image│
-                     └──────────────┬──────────────┘
-                                    │ HTTP + SSE
-                                    ▼
-                     ┌─────────────────────────────┐
-                     │       Express Server        │
-                     │ Session · API · Privacy     │
-                     │ Browser-safe Projection     │
-                     └──────────────┬──────────────┘
-                                    │
-                                    ▼
-                 ┌───────────────────────────────────┐
-                 │          Agent Runtime            │
-                 │ Intent · State · Orchestration    │
-                 └───────────┬──────────────┬────────┘
-                             │              │
-                       prompt / tools       │ typed calls
-                             │              ▼
-                             │      ┌──────────────────┐
-                             │      │   Tool Gateway   │
-                             │      │  9 Typed Tools   │
-                             │      └────────┬─────────┘
-                             │               │
-                             ▼               ▼
-                  ┌────────────────┐  ┌────────────────────┐
-                  │ Chat Model     │  │   Domain Service   │
-                  │ OpenAI-compat. │  │ Planning/Nutrition │
-                  │ loopback :8000 │  │ Safety/Inventory   │
-                  └────────────────┘  │ Day Ledger         │
-                                      └─────────┬──────────┘
-                                                │
-                          ┌─────────────────────┼────────────────────┐
-                          ▼                     ▼                    ▼
-                    ┌──────────┐        ┌──────────────┐      ┌───────────┐
-                    │ SQLite   │        │ Confirmation │      │ Local RAG │
-                    │ State    │        │ Preview→User │      │ Retriever │
-                    │ Ledger   │        │ Confirm→Write│      └─────┬─────┘
-                    └──────────┘        └──────────────┘            │
-                                                                    ▼
-                                                         Embedding endpoint
-                                                            loopback :8001
+```mermaid
+flowchart TB
+  User([Household user])
+
+  subgraph UX["Presentation"]
+    Web["Conversation-first Web UI<br/>Chat · Meal Plan · Household"]
+  end
+
+  subgraph APP["Application and Agent Runtime"]
+    API["Express API and Session Layer<br/>HTTP · SSE · browser-safe projection"]
+    Agent["PrivatePlate Agent Orchestrator<br/>multi-turn state · tool routing"]
+    Tools["Preview-first Tool Gateway<br/>9 model-visible tools"]
+    Intake["Optional Media Intake<br/>image · audio"]
+  end
+
+  subgraph MODEL["Self-hosted Model Runtime<br/>OpenAI-compatible endpoints"]
+    Chat["Gemma 4 12B QAT<br/>chat and tool inference · :8000"]
+    Emb["BGE-small-zh<br/>embedding inference · :8001"]
+  end
+
+  subgraph CORE["Deterministic Domain and Local Data"]
+    Domain["Nutrition · hard constraints<br/>inventory · plan validation"]
+    DB[("SQLite Day Ledger<br/>WAL-backed")]
+    Tasks[("Local Household<br/>Task Board")]
+  end
+
+  User --> Web
+  Web -->|"messages and approvals"| API
+  API -->|"SSE events"| Web
+  API --> Agent
+  API --> Intake
+
+  Agent -->|"loopback OpenAI-compatible API"| Chat
+  Intake -->|"optional multimodal request"| Chat
+
+  Agent --> Tools
+  Tools --> Domain
+
+  Domain -->|"embedding request"| Emb
+  Domain --> DB
+  Domain --> Tasks
+
+  Tools -. "pending write preview" .-> Agent
+  Agent -. "confirmation card" .-> API
+  API -. "confirmed commit only" .-> Domain
 ```
 
-浏览器拿到的并不是完整家庭档案，而是经过裁剪后的展示数据。
+**写入边界：**模型看不到直接提交状态的 `commit_*` 工具。模型可见的写操作只负责生成 Preview；用户确认后，受信任的确认路径才会调用确定性的 Domain 逻辑修改 SQLite 状态。
 
-详细健康标签、营养档案和规划输入保留在服务端，家庭共享屏幕只显示姓名、角色、安全的执行提示、库存事实以及已确认的结果。
+浏览器拿到的并不是完整家庭档案，而是经过裁剪后的展示数据。详细健康标签、营养档案和规划输入保留在服务端，家庭共享屏幕只显示姓名、角色、安全的执行提示、库存事实以及已确认的结果。
 
 ## 仓库结构
 
