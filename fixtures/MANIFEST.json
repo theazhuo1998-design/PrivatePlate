@@ -1,14 +1,14 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAtUtc": "2026-08-14T05:44:00.000Z",
+  "generatedAtUtc": "2026-08-14T06:11:00.000Z",
   "claimBoundary": "AI-assisted synthetic demo data created specifically for PrivatePlate; not clinical datasets, measured nutrition facts, real household records, or redistributed third-party food datasets.",
   "licenses": [
     {
-      "id": "lic-privateplate-synthetic-1",
-      "name": "PrivatePlate synthetic fixture temporary license notice",
-      "path": "fixtures/LICENSES/PRIVATEPLATE_SYNTHETIC_DEMO_1.0.txt",
-      "allowsPublicRedistribution": false,
-      "notes": "Provenance is confirmed by the project owner; final data-license approval is pending."
+      "id": "cc0-1.0",
+      "name": "CC0 1.0 Universal",
+      "path": "fixtures/LICENSES/CC0-1.0.txt",
+      "allowsPublicRedistribution": true,
+      "notes": "Synthetic fixtures are dedicated under CC0 1.0 Universal unless otherwise noted."
     }
   ],
   "sources": [
@@ -17,19 +17,19 @@
       "author": "PrivatePlate project (AI-assisted)",
       "description": "Synthetic household, foods, templates, knowledge cards, and evaluation cases created specifically for the runnable PrivatePlate demo.",
       "modified": false,
-      "allowsPublicRedistribution": false
+      "allowsPublicRedistribution": true
     }
   ],
   "files": [
     {
-      "path": "fixtures/LICENSES/PRIVATEPLATE_SYNTHETIC_DEMO_1.0.txt",
-      "sha256": "ae0c23abc1969e9a545b9aa7de98ca540991078595f0e5c9a1789daeb53feeab",
-      "bytes": 616
+      "path": "fixtures/LICENSES/CC0-1.0.txt",
+      "sha256": "ed7b7aacd95a52a9d68e22cee318086ea6952d4744b1b9545d8ad80af33a285b",
+      "bytes": 7034
     },
     {
       "path": "fixtures/PROVENANCE.md",
-      "sha256": "e4c4de102eb6630dacac23044832e4af4b332bcec430a32eb0a3b1b3be6de088",
-      "bytes": 1433
+      "sha256": "8d1647957e3776a90cc23d1461ab82922f66e0bbd04a7abf1a8966aef995c05f",
+      "bytes": 1444
     },
     {
       "path": "fixtures/evals/public-agent-seed.json",
