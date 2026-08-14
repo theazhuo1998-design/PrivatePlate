@@ -6,7 +6,7 @@ import {
   type InventoryDraftItem
 } from "../api";
 import { SourceIcon } from "./SourceIcon";
-import { INPUT_SOURCE_FRIDGE_SNAPSHOT } from "../device-surface";
+import { INPUT_SOURCE_FRIDGE_SNAPSHOT } from "../content";
 import { MODEL_OFFLINE_RECOVERY } from "../runtime-copy";
 
 type InventoryImageIntakeProps = {

@@ -2,7 +2,6 @@ export * from "./paths.js";
 export * from "./nutrition.js";
 export * from "./nutrition-budget.js";
 export * from "./nutrition-display.js";
-export * from "./hub-loop.js";
 export * from "./aliases.js";
 export * from "./load-fixtures.js";
 export * from "./bundle-filter.js";

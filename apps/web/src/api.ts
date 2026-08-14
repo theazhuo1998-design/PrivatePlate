@@ -416,7 +416,7 @@ export type DayContext = {
       targetId: string;
     }>;
   }>;
-  /** Task 2 projection. Shared hub consumes operationalCues / intake / plannedIntake. */
+  /** Shared-screen projection. Browser only receives operationalCues / intake / plannedIntake. */
   sharedDisplay?: {
     serviceDate: string;
     algorithm?: {
