@@ -34,30 +34,79 @@ PrivatePlate 会在后台结合家庭成员、库存、饮食偏好与限制、�
 ## 一次完整的工作流程
 
 ```text
-用户：
-“今晚三个人吃，把快过期的先用了，妈妈不要辣”
-                    │
-                    ▼
-             PrivatePlate Agent
-                    │
-        ┌───────────┴───────────┐
-        ▼                       ▼
-   读取家庭上下文             查询当前库存
-        │                       │
-        └───────────┬───────────┘
-                    ▼
-             搜索可行菜品组合
-                    │
-                    ▼
-        确定性规则 / 营养 / 安全检查
-                    │
-                    ▼
-                生成方案
-                    │
-          用户继续修改或确认
-                    │
-                    ▼
-      库存 / 餐食状态 / 家庭任务写入
+用户提出需求
+自然语言 / 语音 / 冰箱照片
+              │
+              ▼
+      Conversation-first UI
+          React / Vite
+              │
+          HTTP + SSE
+              ▼
+        Express Server
+     Session / API Boundary
+              │
+              ▼
+        Agent Runtime
+  理解当前轮次与会话状态
+              │
+              ├───────────────┐
+              ▼               │
+      OpenAI-compatible       │
+         Chat Model           │
+     理解意图 / 选择工具       │
+              │               │
+              └──── tool call ┘
+                      │
+                      ▼
+               Typed Tool Gateway
+                9 Model-visible Tools
+                      │
+          ┌───────────┼───────────┐
+          ▼           ▼           ▼
+      家庭上下文      当前库存     本地知识检索
+      Day Ledger     候选餐食      Local RAG
+          └───────────┼───────────┘
+                      ▼
+               Domain Service
+        确定性规划 / 营养计算 / 安全约束
+                      │
+                      ▼
+                  餐食方案
+                      │
+                      ▼
+             Agent 组织最终回复
+                      │
+                      ▼
+              用户继续调整？
+                │           │
+               是           否
+                │           │
+                └──回到 Agent│
+                            ▼
+                  是否涉及状态写入？
+                     │        │
+                    否        是
+                     │        │
+                     ▼        ▼
+                  直接返回   Preview
+                              │
+                              ▼
+                         用户确认
+                              │
+                              ▼
+                            Commit
+                              │
+              ┌───────────────┼────────────────┐
+              ▼               ▼                ▼
+            SQLite         Day Ledger        Inventory /
+                                             Member Memory /
+                                             Task Board
+                              │
+                              ▼
+                     更新后的家庭状态
+                              │
+                              └────进入下一轮对话
 ```
 
 LLM 负责理解用户意图、选择工具以及组织规划过程。
