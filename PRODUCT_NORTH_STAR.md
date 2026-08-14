@@ -1,123 +1,112 @@
 # PrivatePlate Product North Star
 
-> This document defines the canonical product interpretation for PrivatePlate. The current repository is only one implemented vertical and must not be treated as the complete product vision.
+> This document is the repository-level north-star guidance for interpreting PrivatePlate's product vision and positioning. It does not rename the product, and it is not an implementation specification.
 
-## 1. 母命题
+## 1. 产品定义
 
-真正想解决的不是“今天吃什么”，也不是做一个更聪明的菜谱助手。
+PrivatePlate 不是普通饮食问答机器人，也不是现有饮食软件接上一个聊天框。
 
-长期目标是：
+它被定位为：
 
-> **用 Household Agent 接管家庭中长期由某个人默默承担的无形认知劳动与协调劳动。**
-
-这里的“无形劳动”包括持续记住家庭状态、提前计划、协调不同成员需求、处理变化、做日常判断、发现缺口、分配任务，并把执行交给合适的人、设备或未来的实体机器人。
-
-家庭不应该永远依赖某一个人充当全家的“外置大脑”。
-
-## 2. Household Agent 的长期角色
-
-Household Agent 应当持续理解一个家庭，而不是只响应一次请求。
-
-它最终应具备的核心职责是：
-
-- 维护持续的家庭状态，而不是每次从零开始；
-- 认识不同家庭成员及其需求、偏好、限制与当日变化；
-- 记住需要被记住的家庭事务；
-- 在多个约束之间做日常协调与规划；
-- 主动发现缺口、冲突和待办；
-- 在授权后把任务交给家庭成员、服务、智能家电或实体机器人；
-- 让实体机器人承担“身体”的执行能力，而 Household Agent 继续作为持续决策与协调的“大脑”。
-
-工作类别暂称 **Household Agent / Household Intelligence**。母体品牌名称尚未确定，不应把 `PrivatePlate` 强行扩张为整个母品牌。
-
-## 3. PrivatePlate 在这棵树上的位置
-
-PrivatePlate 是这个长期愿景的**第一个垂直能力：家庭餐食与营养协调**。
-
-餐食是合适的第一块，因为一顿家庭餐天然同时包含：
-
-- 谁今天吃饭；
-- 每个人有什么饮食限制与偏好；
-- 冰箱里有什么、什么应优先使用；
-- 上一餐已经发生了什么；
-- 如何规划一顿共享餐；
-- 不同成员如何做份量与约束适配；
-- 缺什么需要采购；
-- 谁负责准备或执行；
-- 用户改变主意后如何继承已有状态继续重规划；
-- 实际结果如何进入下一轮家庭状态。
-
-因此，PrivatePlate 不是“菜谱推荐器”，而是对**家庭餐食这件持续家庭事务**进行 orchestration 的 Agent vertical。
+> **一个面向家庭场景的私有膳食管家 Agent，能够认识家庭成员及其饮食需求，管理家中食材，规划一餐，协商调整方案，并在用户授权后继续完成采购、烹调支持或任务分发。**
 
 推荐英文定位：
 
-> **PrivatePlate is the meal and nutrition coordination vertical of a broader Household Agent vision for reducing invisible domestic cognitive labor.**
+> **A private household meal orchestration agent that coordinates family needs, pantry inventory, meal planning, shopping, and cooking handoffs.**
 
-更贴近当前产品能力的短句：
+核心不是 `meal recommendation`，而是 `meal orchestration`：PrivatePlate 不只回答“吃什么”，而是持续协调围绕一顿家庭餐发生的成员需求、食材、营养、采购和执行工作。
 
-> **It does not just recommend a meal. It coordinates the household work around the meal.**
+## 2. 核心用户价值
+
+PrivatePlate 要解决的不是单次给答案，而是减少家庭成员为了吃饭这件事反复承担的认知与协调工作。
+
+它应当能够围绕一顿家庭餐持续处理这样的事务：
+
+- 今天有哪些人吃饭；
+- 每个人有哪些饮食限制、偏好和当日变化；
+- 已经吃过什么，下一餐需要如何平衡；
+- 家里现有什么食材，哪些应该优先使用；
+- 如何规划一顿尽量共享、同时适配不同成员的餐食；
+- 用户改变主意后如何继承已有状态继续调整；
+- 缺什么需要采购；
+- 谁负责准备、购买或执行；
+- 实际结果如何进入后续状态，而不是每次重新从零开始。
+
+判断一个新功能是否真正属于 PrivatePlate，优先问：
+
+> **它是否实质减少了家庭在餐食与日常营养上的记忆、判断、协调或执行负担？**
+
+如果答案是否定的，即使功能很新奇，也不应仅因为“AI 能做”就进入产品方向。
+
+## 3. 家庭，而不是孤立的单个用户
+
+PrivatePlate 面对的是一个家庭系统，而不是一个单独的健康档案。
+
+- 家庭中可能有多个成员；
+- 每个成员的目标、限制与偏好可能不同；
+- 一顿饭通常需要在共享菜品与个体适配之间取得平衡；
+- 决策者、采购者、做饭者和用餐者可能不是同一个人；
+- 执行可能被交给伴侣、家人、照护者、服务、智能设备，或未来的实体机器人。
+
+因此，产品价值来自对家庭餐食事务的持续协调，而不是仅生成一份菜单。
 
 ## 4. 营养角色
 
-长期愿景包含对家庭日常营养工作的承担，但不等同于替代临床营养师或医疗专业人员。
+PrivatePlate 的长期愿景包含承担家庭日常、非临床的营养协调工作，但不等同于替代临床营养师或医疗专业人员。
 
-适合交给系统的是日常、非临床的营养协调，例如：
+适合交给系统的是例如：
 
 - 家庭饮食是否长期失衡；
 - 不同年龄和成员的日常份量差异；
 - 已经吃过什么与下一餐如何平衡；
 - 盐、油、糖、能量等日常 guardrail；
 - 明确忌口与过敏约束；
-- 如何结合现有库存安排一餐。
+- 如何结合家庭库存安排一餐。
 
-诊断、治疗、处方、调药以及医学营养治疗不属于该产品的普通自动决策范围。
+诊断、治疗、处方、调药以及医学营养治疗不属于普通自动决策范围。
 
-## 5. 当前仓库 ≠ 完整愿景
+## 5. 产品演化方向
 
-当前 GoAI / public repository 是一个可运行、可验证的实现切片。
+PrivatePlate 的产品形态可以随部署环境演化，但交互载体不是产品本身。
 
-它主要证明餐食 vertical 中已经能成立的一部分能力，例如：
+- **远期方向**：成为未来家政机器人可搭载的家庭膳食管理模块，让机器人承担实体执行能力，而 PrivatePlate 负责餐食与营养相关的持续理解、规划和协调。
+- **近期方向**：可以通过带显示屏、语音交互的家庭终端等形态进入真实家庭场景。
+- **当前实现**：以可运行的软件形态验证家庭膳食协调闭环。
 
-- 多成员家庭上下文；
-- 库存与当天状态；
-- 多轮餐食规划与修改；
-- 确定性营养、约束和库存逻辑；
-- 结构化 Agent tools；
-- shopping gap；
-- household task handoff；
-- preview → confirmation → commit；
-- SQLite 持久化；
-- privacy-safe projection；
-- local RAG / local-model-compatible architecture。
+智能冰箱屏幕、浏览器设备模拟器、语音入口或未来硬件都属于 interface / deployment surface，不应反过来定义 PrivatePlate 是什么产品。
 
-这些实现不是母命题的全部，也不意味着当前就已经实现了完整家务 Agent、清洁、洗衣、家庭日程、真实采购执行、智能家电控制或实体机器人能力。
+## 6. 当前仓库 ≠ 完整产品愿景
 
-**不要为了让当前代码“看起来配得上长期愿景”而强行加入这些未来能力。**
+当前 public repository 只是 PrivatePlate 当前阶段的一个可运行、可验证实现切片。
 
-长期愿景用于决定方向；当前实现范围用于决定现在真正交付什么。
+它应当被用来回答：
 
-## 6. 防止误读的规则
+- 今天实际实现了什么；
+- 哪些能力已有可验证证据；
+- 当前工程边界、接口和测试是什么。
+
+它不应被用来反推出：
+
+- PrivatePlate 的完整产品愿景只有当前这些功能；
+- 当前 demo 的界面就是最终产品形态；
+- 比赛范围、benchmark 或某次实现裁剪就是长期产品边界。
+
+同样，也不要为了让当前代码“看起来配得上长期愿景”而强行加入尚未进入当前范围的能力。
+
+**长期愿景用于决定方向；当前需求与工程规格用于决定现在真正交付什么。**
+
+## 7. 防止后续误读的规则
 
 以后任何 AI、开发者、评委材料或产品文案在理解 PrivatePlate 时，都应遵守：
 
-1. **不要从代码范围反推完整产品定义。** 当前实现窄，是因为它是第一个 vertical，不是因为愿景只有这么大。
-2. **不要把 PrivatePlate 定义成普通 meal-planning / recipe chatbot。** 餐食推荐只是它内部的一小段能力。
-3. **不要把智能冰箱或浏览器设备模拟器当成产品本身。** 它们只是交互和部署 surface。
-4. **不要把 Home Hub 当成既定方向。** 除非用户未来明确重新选择，否则它不是 canonical architecture / product framing。
-5. **不要让比赛叙事覆盖产品叙事。** AMD / ROCm、本地推理、benchmark、GOAI 评分要求都属于阶段性实现与证明环境。
-6. **不要让安全工程抢走核心价值叙事。** Privacy、typed tools、deterministic Domain、confirmation、idempotency、eval 都很重要，但它们回答的是“为什么可信”，不是“为什么家庭需要它”。
-7. **任何路线图必须区分三层：**长期 Household Agent 北极星、PrivatePlate meal/nutrition vertical、当前仓库已实现能力。
-
-## 7. 未来判断新功能的标准
-
-一个新功能是否属于这条产品线，不看“AI 能不能做”，而看它是否减少了真实家庭中的认知与协调负担。
-
-优先问：
-
-> **它是否让家庭少一个必须由某个人一直记住、判断、协调或追着执行的事情？**
-
-如果答案是否定的，它即使很酷，也未必属于这个北极星。
+1. **不要从当前代码范围反推完整产品定义。** 当前实现范围可以窄于产品愿景。
+2. **不要把 PrivatePlate 定义成普通 meal-planning / recipe chatbot。** 餐食推荐只是完整协调流程中的一小段能力。
+3. **不要把某个硬件或 UI surface 当成产品本身。** 载体可以变化，家庭膳食协调这个产品职责不因此改变。
+4. **不要让比赛叙事覆盖产品叙事。** GPU、部署环境、benchmark、评分要求等属于阶段性的实现与证明环境。
+5. **不要让安全工程抢走核心价值叙事。** Privacy、typed tools、deterministic logic、confirmation、idempotency、eval 都很重要，但它们主要回答“为什么可信”，不是“为什么家庭需要它”。
+6. **不要让长期愿景直接变成未授权的当前开发范围。** Product North Star 负责方向，PRD / implementation spec 负责当前交付边界。
+7. **不要把未经用户确认的候选命名、母品牌、产品类别或架构假设写成 canonical fact。**
 
 ## 8. 一句话总纲
 
-> **长期目标：让 Household Agent 承担家庭中看不见的认知与协调劳动；PrivatePlate 是从餐食与营养开始的第一块可运行大脑。**
+> **PrivatePlate 要成为家庭里的私有膳食管家 Agent：不只推荐一餐，而是持续协调家庭成员、库存、营养、采购与执行，让围绕“吃饭”产生的家庭事务真正被接住。**
