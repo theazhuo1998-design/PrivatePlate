@@ -1,21 +1,21 @@
 {
   "schemaVersion": "1.0.0",
-  "generatedAtUtc": "2026-08-14T04:04:28.525Z",
-  "claimBoundary": "Checksums for offline fixture integrity. Synthetic demo data only; not clinical datasets.",
+  "generatedAtUtc": "2026-08-14T05:44:00.000Z",
+  "claimBoundary": "AI-assisted synthetic demo data created specifically for PrivatePlate; not clinical datasets, measured nutrition facts, real household records, or redistributed third-party food datasets.",
   "licenses": [
     {
       "id": "lic-privateplate-synthetic-1",
-      "name": "PrivatePlate synthetic fixture review notice",
+      "name": "PrivatePlate synthetic fixture temporary license notice",
       "path": "fixtures/LICENSES/PRIVATEPLATE_SYNTHETIC_DEMO_1.0.txt",
       "allowsPublicRedistribution": false,
-      "notes": "Provenance and final data-license approval are pending."
+      "notes": "Provenance is confirmed by the project owner; final data-license approval is pending."
     }
   ],
   "sources": [
     {
       "id": "src-synthetic-demo",
-      "author": "PrivatePlate project",
-      "description": "Synthetic household, foods, templates, and knowledge cards for the runnable demo.",
+      "author": "PrivatePlate project (AI-assisted)",
+      "description": "Synthetic household, foods, templates, knowledge cards, and evaluation cases created specifically for the runnable PrivatePlate demo.",
       "modified": false,
       "allowsPublicRedistribution": false
     }
@@ -23,13 +23,13 @@
   "files": [
     {
       "path": "fixtures/LICENSES/PRIVATEPLATE_SYNTHETIC_DEMO_1.0.txt",
-      "sha256": "04be89f41fedcc2da833e5771de38bc8e146dd42257d9c7795f7f191ee710280",
-      "bytes": 517
+      "sha256": "ae0c23abc1969e9a545b9aa7de98ca540991078595f0e5c9a1789daeb53feeab",
+      "bytes": 616
     },
     {
       "path": "fixtures/PROVENANCE.md",
-      "sha256": "b2aeb0153a0a8178263ccc9c9a9510102f86b39dd3c770acd49a6b8948321287",
-      "bytes": 1018
+      "sha256": "e4c4de102eb6630dacac23044832e4af4b332bcec430a32eb0a3b1b3be6de088",
+      "bytes": 1433
     },
     {
       "path": "fixtures/evals/public-agent-seed.json",
