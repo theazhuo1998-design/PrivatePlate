@@ -22,6 +22,11 @@ export const QUICK_PROMPTS = [
 /** Placeholder while a turn is in flight — must stay meal-agnostic. */
 export const ASSISTANT_PENDING_TEXT = "稍等，我先看看家里的情况…";
 
+export const INPUT_SOURCE_FRIDGE_SNAPSHOT = "用户上传的冰箱快照";
+export const INPUT_SOURCE_BROWSER_MIC = "浏览器麦克风";
+export const INPUT_SOURCE_MANUAL = "手动输入";
+export const INPUT_SOURCE_FRIDGE_SIM = "智能冰箱模拟数据";
+
 const WEEKDAY_LABELS = [
   "周日",
   "周一",

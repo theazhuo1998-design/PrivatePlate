@@ -5,8 +5,8 @@ import {
   formatGrams,
   ROLE_NAMES
 } from "../formatters";
-import { isSharedSafeCue, INPUT_SOURCE_FRIDGE_SIM } from "../device-surface";
-import { householdCueLines } from "../hub-loop";
+import { INPUT_SOURCE_FRIDGE_SIM } from "../content";
+import { isSharedSafeDisplayText } from "../privacy-display";
 import type { InboxSnapshot } from "../types";
 import {
   CAPABILITY_LINE,
@@ -93,7 +93,6 @@ export function UtilityDrawer({
         {view === "members" ? (
           <MembersView
             context={context}
-            dayContext={dayContext}
             uiOnly={uiOnly}
             busy={busy}
             onConfirm={onConfirm}
@@ -123,14 +122,12 @@ export function UtilityDrawer({
 
 function MembersView({
   context,
-  dayContext,
   uiOnly,
   busy,
   onConfirm,
   onCancelPending
 }: {
   context: HouseholdContext | null;
-  dayContext: DayContext | null;
   uiOnly: UiOnly | null;
   busy: boolean;
   onConfirm: () => void;
@@ -159,7 +156,7 @@ function MembersView({
       {context && context.members.length > 0 ? (
         <div className="member-detail-list">
           {context.members.map((member) => {
-            const cues = memberDrawerCues(member.id, context, dayContext);
+            const cues = memberDrawerCues(member);
             return (
             <article className="member-detail" key={member.id}>
               <div className="member-detail-avatar">
@@ -350,7 +347,9 @@ function MemberMemoryPreviewCard({
   const memberName = stringField(preview, "memberName") || "家庭成员";
   const kind = stringField(preview, "kind");
   const rawSummary = stringField(preview, "summary") || "资料变更";
-  const summary = isSharedSafeCue(rawSummary) ? rawSummary : "已记录一项用餐约束";
+  const summary = isSharedSafeDisplayText(rawSummary)
+    ? rawSummary
+    : "已记录一项用餐约束";
   const polarity = stringField(preview, "polarity");
   const note = stringField(preview, "note") || "确认保存前不会改写家庭资料。";
   const confirmLabel = uiOnly.confirmLabel || "确认保存家庭资料";
@@ -606,29 +605,8 @@ function numberField(record: Record<string, unknown>, key: string): number | nul
   return typeof value === "number" && Number.isFinite(value) ? value : null;
 }
 
-function memberDrawerCues(
-  memberId: string,
-  context: HouseholdContext,
-  dayContext: DayContext | null
-): string[] {
-  const lookup = new Map(
-    context.members.map((member) => [member.id, member.displayName])
-  );
-  const line = householdCueLines(dayContext, context, lookup).find((item) =>
-    item.startsWith(`${lookup.get(memberId) ?? ""}：`)
-  );
-  if (line) {
-    const [, cues] = line.split("：");
-    return (cues ?? "")
-      .split("、")
-      .map((cue) => cue.trim())
-      .filter(isSharedSafeCue);
-  }
-  return context.constraints
-    .filter(
-      (constraint) =>
-        constraint.memberId === memberId && constraint.kind === "avoid_ingredient"
-    )
-    .map((constraint) => `避${foodName(constraint.targetId)}`)
-    .filter(isSharedSafeCue);
+function memberDrawerCues(member: {
+  operationalCues?: string[];
+}): string[] {
+  return (member.operationalCues ?? []).filter(Boolean);
 }

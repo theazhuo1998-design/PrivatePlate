@@ -2,7 +2,7 @@
   "name": "privateplate",
   "private": true,
   "version": "0.1.0",
-  "description": "PrivatePlate — a household meal coordination Agent for smart fridges and home hubs",
+  "description": "PrivatePlate — a conversation-first household meal coordination Agent for smart fridges",
   "type": "module",
   "workspaces": [
     "packages/*",
