@@ -28,6 +28,11 @@ ordering, or an external messaging service. Photo and voice results require user
 review. Nutrition values are engineering estimates for demonstration and are not
 medical advice.
 
+The files under `fixtures/` are AI-assisted synthetic demo data created
+specifically for PrivatePlate. They do not redistribute real household records,
+clinical datasets, measured nutrition databases, or third-party food datasets.
+See `fixtures/PROVENANCE.md` for the provenance boundary.
+
 ## Architecture
 
 ```text
@@ -109,7 +114,7 @@ quality of any particular real model.
 
 This clean repository contains the candidate public layer: browser and server
 applications, Agent orchestration, domain contracts, generic nutrition
-guardrails, synthetic demo fixtures, and evaluation scaffolding.
+guardrails, AI-assisted synthetic demo fixtures, and evaluation scaffolding.
 
 The advanced chronic-disease recommendation engine, tuned thresholds, complete
 food database, food-source audit pipeline, private regression matrix, historical
@@ -118,7 +123,8 @@ included. See [OPEN_SOURCE_SCOPE.md](OPEN_SOURCE_SCOPE.md).
 
 ## License status
 
-This repository is currently staged privately for source and data provenance
-review. No open-source or open-data license has been granted yet. Do not make the
-repository public until `LICENSE`, `DATA_LICENSE.md`, and fixture provenance have
-been approved by the owner.
+This repository is currently staged privately while the owner selects the final
+source-code and synthetic-data licenses. Fixture provenance is already documented.
+No open-source or open-data license has been granted yet. Do not make the
+repository public until `LICENSE` and `DATA_LICENSE.md` reflect the owner's final
+licensing choices.
