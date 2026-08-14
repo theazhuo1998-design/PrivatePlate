@@ -112,19 +112,23 @@ quality of any particular real model.
 
 ## Public/private boundary
 
-This clean repository contains the candidate public layer: browser and server
-applications, Agent orchestration, domain contracts, generic nutrition
-guardrails, AI-assisted synthetic demo fixtures, and evaluation scaffolding.
+This clean repository contains the public core: browser and server applications,
+Agent orchestration, domain contracts, generic nutrition guardrails, AI-assisted
+synthetic demo fixtures, and evaluation scaffolding.
 
-The advanced chronic-disease recommendation engine, tuned thresholds, complete
-food database, food-source audit pipeline, private regression matrix, historical
-competition evidence, internal working documents, and model weights are not
-included. See [OPEN_SOURCE_SCOPE.md](OPEN_SOURCE_SCOPE.md).
+Production data, real user or household data, private evaluation material,
+commercial integrations, model weights, and internal working documents are not
+part of this repository. See [OPEN_SOURCE_SCOPE.md](OPEN_SOURCE_SCOPE.md) for the
+current boundary.
 
-## License status
+## License
 
-This repository is currently staged privately while the owner selects the final
-source-code and synthetic-data licenses. Fixture provenance is already documented.
-No open-source or open-data license has been granted yet. Do not make the
-repository public until `LICENSE` and `DATA_LICENSE.md` reflect the owner's final
-licensing choices.
+PrivatePlate source code in this repository is licensed under the
+[Apache License 2.0](LICENSE).
+
+AI-assisted synthetic demonstration data under `fixtures/` is dedicated under
+[CC0 1.0 Universal](DATA_LICENSE.md). The full CC0 legal code is included at
+`fixtures/LICENSES/CC0-1.0.txt`.
+
+Third-party dependencies and model runtimes keep their own licenses and terms;
+see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
