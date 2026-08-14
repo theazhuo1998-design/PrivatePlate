@@ -67,32 +67,49 @@ LLM 负责理解用户意图、选择工具以及组织规划过程。
 ## 架构
 
 ```text
-浏览器设备界面（React / Vite）
-              │
-          HTTP + SSE
-              ▼
-       Express Server
-              │
-              ▼
-         Agent Runtime
-              │
-     OpenAI-compatible 模型
-       127.0.0.1:8000
-              │
-              ▼
-     Typed Tools + Confirmation
-              │
-              ▼
-        Domain Service
-       ┌──────┼────────┐
-       ▼      ▼        ▼
-    SQLite   库存    Day Ledger
-       │
-       └───────────────┐
-                       ▼
-                 本地 RAG（可选）
-              embedding endpoint
-               127.0.0.1:8001
+                     ┌─────────────────────────────┐
+                     │   Conversation-first UI     │
+                     │ React / Vite · Voice · Image│
+                     └──────────────┬──────────────┘
+                                    │ HTTP + SSE
+                                    ▼
+                     ┌─────────────────────────────┐
+                     │       Express Server        │
+                     │ Session · API · Privacy     │
+                     │ Browser-safe Projection     │
+                     └──────────────┬──────────────┘
+                                    │
+                                    ▼
+                 ┌───────────────────────────────────┐
+                 │          Agent Runtime            │
+                 │ Intent · State · Orchestration    │
+                 └───────────┬──────────────┬────────┘
+                             │              │
+                       prompt / tools       │ typed calls
+                             │              ▼
+                             │      ┌──────────────────┐
+                             │      │   Tool Gateway   │
+                             │      │  9 Typed Tools   │
+                             │      └────────┬─────────┘
+                             │               │
+                             ▼               ▼
+                  ┌────────────────┐  ┌────────────────────┐
+                  │ Chat Model     │  │   Domain Service   │
+                  │ OpenAI-compat. │  │ Planning/Nutrition │
+                  │ loopback :8000 │  │ Safety/Inventory   │
+                  └────────────────┘  │ Day Ledger         │
+                                      └─────────┬──────────┘
+                                                │
+                          ┌─────────────────────┼────────────────────┐
+                          ▼                     ▼                    ▼
+                    ┌──────────┐        ┌──────────────┐      ┌───────────┐
+                    │ SQLite   │        │ Confirmation │      │ Local RAG │
+                    │ State    │        │ Preview→User │      │ Retriever │
+                    │ Ledger   │        │ Confirm→Write│      └─────┬─────┘
+                    └──────────┘        └──────────────┘            │
+                                                                    ▼
+                                                         Embedding endpoint
+                                                            loopback :8001
 ```
 
 浏览器拿到的并不是完整家庭档案，而是经过裁剪后的展示数据。
