@@ -12,7 +12,6 @@ import type { ActionStatus, ChatMessage } from "../types";
 import { localMealHero } from "../content";
 import { SourceIcon } from "./SourceIcon";
 import { VoiceInputButton } from "./VoiceInputButton";
-import { INPUT_SOURCE_BROWSER_MIC, INPUT_SOURCE_MANUAL, DEVICE_SIMULATOR_DISCLOSURE } from "../device-surface";
 import { MODEL_OFFLINE_RECOVERY } from "../runtime-copy";
 
 type ConversationPanelProps = {
@@ -190,7 +189,6 @@ export function ConversationPanel({
         <form className="composer" onSubmit={submit}>
           <p className="composer-label">
             {secondary ? "输入需求" : "继续和我说"}
-            <span className="input-source-label"> · {INPUT_SOURCE_MANUAL}</span>
           </p>
           <div className="composer-box">
             <textarea
@@ -220,10 +218,10 @@ export function ConversationPanel({
                   disabled={busy || !operable}
                   disabledReason={!operable ? MODEL_OFFLINE_RECOVERY : undefined}
                   onTranscript={onInputChange}
-                  variant="hold"
+                  variant="icon"
                 />
                 <span className="voice-note">
-                  {INPUT_SOURCE_BROWSER_MIC}；按住说话会先转成文字，不会自动发送
+                  语音会先转成文字，不会自动发送
                 </span>
               </div>
               <button
@@ -241,11 +239,8 @@ export function ConversationPanel({
           </div>
           <p className="composer-hint">
             {!operable
-              ? MODEL_OFFLINE_RECOVERY
+              ? "模型还没准备好，暂时不能安排。可到设置查看状态。"
               : "Enter 发送  ·  Shift + Enter 换行"}
-          </p>
-          <p className="composer-hint composer-disclosure" role="note">
-            {DEVICE_SIMULATOR_DISCLOSURE}
           </p>
         </form>
       )}
@@ -258,7 +253,7 @@ function PlanMessage({ plan }: { plan: MealPlan }) {
   return (
     <div className="chat-plan-preview">
       {dishes.map((dish, index) => (
-        <div className="chat-dish-row" key={dish.templateId}>
+        <div className={`chat-dish-row dish-tone-${index % 3}`} key={dish.templateId}>
           <span className={`dish-dot dish-dot-${index % 3}`} aria-hidden="true" />
           <span className="dish-role">{dish.roleLabel}</span>
           <strong>{dish.name || templateName(dish.templateId)}</strong>
