@@ -35,7 +35,7 @@ A product-vision document must not be used to invent unapproved engineering work
 
 ### Downstream agent handoffs
 
-When creating a task packet, implementation brief, or handoff for Grok, Claude, another coding agent, or a new AI session, make the first instruction:
+When creating a task packet, implementation brief, or handoff for another coding agent or a new AI session, make the first instruction:
 
 > Read `AGENTS.md` and `PRODUCT_NORTH_STAR.md` before interpreting the product or proposing product-level changes.
 
