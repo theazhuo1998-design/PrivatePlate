@@ -87,7 +87,7 @@ PrivatePlate 的长期愿景包含承担家庭日常、非临床的营养协调�
 
 ## 6. 当前仓库 ≠ 完整愿景
 
-当前 public repository 是 PrivatePlate meal / nutrition vertical 当前阶段的一个可运行、可验证实现切片。
+当前 public repository 是 PrivatePlate 这个 meal / nutrition vertical 在当前阶段的一个可运行、可验证实现切片。
 
 它应当被用来回答：
 
