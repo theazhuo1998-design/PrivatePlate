@@ -20,6 +20,6 @@ medical advice, or production data.
 
 This provenance was confirmed by the project owner on 2026-08-14.
 
-`MANIFEST.json` records fixture hashes and the current redistribution status.
-Provenance is confirmed, but public redistribution remains disabled until the
-owner selects and approves a final data license.
+Unless otherwise noted, the fixture set is dedicated under CC0 1.0 Universal and
+may be publicly reused and redistributed under that dedication. See
+`../DATA_LICENSE.md`, `LICENSES/CC0-1.0.txt`, and `MANIFEST.json`.
