@@ -18,7 +18,7 @@ Household Agent 的核心价值不是“能回答多少家庭问题”，而是�
 
 ## 2. PrivatePlate 在长期方向中的位置
 
-PrivatePlate 是这条长期方向里的**餐食与营养 vertical**，也是第一块具体切入的家庭事务领域。
+PrivatePlate 是这条长期方向里的**第一块餐食与营养 vertical**，也是最先落地的具体家庭事务领域。
 
 它之所以适合作为第一块，是因为一顿家庭餐天然包含一组完整的家庭协调问题：
 
@@ -57,7 +57,7 @@ PrivatePlate 是这条长期方向里的**餐食与营养 vertical**，也是第
 这两个层级不要混淆：
 
 - Household Agent 决定长期产品方向；
-- PrivatePlate 决定餐食与营养 vertical 的产品职责；
+- PrivatePlate 决定第一块餐食与营养 vertical 的产品职责；
 - 当前 PRD / implementation spec 决定现在真正开发和交付什么。
 
 ## 4. 营养角色
@@ -104,7 +104,7 @@ PrivatePlate 的长期愿景包含承担家庭日常、非临床的营养协调�
 
 同样，也不要为了让当前代码“看起来配得上长期愿景”而强行加入尚未进入当前范围的未来能力。
 
-**长期北极星用于决定方向；PrivatePlate 定义第一块 vertical；当前需求与工程规格用于决定现在真正交付什么。**
+**长期北极星用于决定方向；PrivatePlate 是第一块 vertical；当前需求与工程规格用于决定现在真正交付什么。**
 
 ## 7. 防止后续误读的规则
 
@@ -112,7 +112,7 @@ PrivatePlate 的长期愿景包含承担家庭日常、非临床的营养协调�
 
 1. **不要从当前代码范围反推完整产品定义。** 当前实现窄，不代表长期方向只有这么窄。
 2. **不要把 PrivatePlate 定义成普通 meal-planning / recipe chatbot。** 餐食推荐只是完整协调流程中的一小段能力。
-3. **不要把 PrivatePlate 强行扩张成母体品牌。** 它是 meal / nutrition vertical；母体品牌尚未确定。
+3. **不要把 PrivatePlate 强行扩张成母体品牌。** 它是第一块 meal / nutrition vertical；母体品牌尚未确定。
 4. **不要把某个硬件或 UI surface 当成产品本身。** 载体可以变化。
 5. **不要让比赛叙事覆盖产品叙事。** GPU、部署环境、benchmark、评分要求等属于阶段性的实现与证明环境。
 6. **不要让安全工程抢走核心价值叙事。** Privacy、typed tools、deterministic logic、confirmation、idempotency、eval 都很重要，但它们主要回答“为什么可信”，不是“为什么家庭需要它”。
