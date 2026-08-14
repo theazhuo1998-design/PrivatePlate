@@ -4,7 +4,7 @@
 
 Before any task involving product positioning, product strategy, roadmap direction, README framing, pitch materials, competition submissions, UX direction, or major feature decisions, read `PRODUCT_NORTH_STAR.md` first.
 
-`PRODUCT_NORTH_STAR.md` is the canonical repository-level source for **product vision, positioning, and strategic interpretation**. It is not an implementation specification and must not override current code, accepted product requirements, engineering contracts, safety boundaries, or direct user instructions.
+`PRODUCT_NORTH_STAR.md` is the canonical repository-level source for **product vision, positioning, and strategic interpretation**. It is not an implementation specification and must not override current accepted product requirements, engineering contracts, safety boundaries, or direct user instructions.
 
 The current repository is an implementation slice of PrivatePlate, not the complete product definition.
 
