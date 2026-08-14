@@ -6,20 +6,22 @@ Before any task involving product positioning, product strategy, roadmap directi
 
 `PRODUCT_NORTH_STAR.md` is the canonical repository-level source for **product vision, positioning, and strategic interpretation**. It is not an implementation specification and must not override current accepted product requirements, engineering contracts, safety boundaries, or direct user instructions.
 
-The current repository is an implementation slice of PrivatePlate, not the complete product definition.
+The current repository is an implementation slice of PrivatePlate. PrivatePlate itself is the meal and nutrition vertical of a broader Household Agent direction.
 
 ### Required interpretation rules
 
 - Do **not** infer the full product vision from the current codebase, README, demo surface, or competition scope.
-- PrivatePlate is a **private household meal orchestration agent**. It coordinates family needs, pantry inventory, meal planning, shopping gaps, cooking support, and authorized task handoffs.
+- The long-term north star is a **Household Agent** that reduces invisible domestic cognitive and coordination labor: remembering household state, planning, reconciling needs, making routine decisions, noticing gaps, and handing work to people, services, devices, or future robots.
+- PrivatePlate is the **meal and nutrition vertical** of that broader direction. It is the first concrete domain, not the parent brand and not the full scope of the long-term product vision.
+- Within its vertical, PrivatePlate is a private household meal orchestration agent. It coordinates family needs, pantry inventory, meal planning, shopping gaps, cooking support, and authorized task handoffs.
 - PrivatePlate is not merely a meal recommendation tool, recipe chatbot, or a chat interface attached to an ordinary diet app.
 - Smart-fridge screens, browser device simulators, voice interfaces, and future hardware are interfaces / deployment surfaces, not the product category by themselves.
 - Competition-specific constraints, benchmark work, safety mechanisms, and engineering boundaries are important implementation evidence, but they must not replace the primary product story.
 - Safety, privacy, deterministic logic, confirmation gates, and evaluation are enabling qualities. They are not the core user value proposition by themselves.
-- Do not broaden the implementation merely to make it match the long-term vision. Preserve a clear distinction between product vision, current product scope, and what this repository actually implements today.
-- When summarizing PrivatePlate, distinguish:
-  1. the long-term PrivatePlate product direction,
-  2. the current product scope,
+- Do not broaden the implementation merely to make it match the long-term Household Agent vision. Preserve a clear distinction between long-term north star, PrivatePlate vertical scope, and what this repository actually implements today.
+- When summarizing the product direction, explicitly distinguish:
+  1. the long-term Household Agent north star,
+  2. PrivatePlate as the meal / nutrition vertical,
   3. what this repository actually implements today.
 
 ### Source precedence
