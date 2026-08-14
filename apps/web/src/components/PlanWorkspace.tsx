@@ -53,46 +53,7 @@ export function PlanWorkspace({
   }, [open, plan?.id, uiOnly?.pendingActionId, orphanedPendingActionId]);
 
   if (!open) return null;
-  if (!plan && !uiOnly && !orphanedPendingActionId) {
-    if (actionStatus !== "pending") return null;
-    return (
-      <aside className="context-drawer" aria-label="本餐方案">
-        <header className="drawer-topbar">
-          <div>
-            <h2>本餐安排</h2>
-            <p>说完需求后会显示在这里</p>
-          </div>
-          <div className="drawer-top-actions">
-            <span className="drawer-status">待确认</span>
-            <button className="drawer-collapse" type="button" onClick={onClose}>
-              收起
-            </button>
-            <button
-              className="drawer-icon-button"
-              type="button"
-              ref={closeRef}
-              onClick={onClose}
-              aria-label="关闭本餐方案"
-            >
-              <SourceIcon name="x" size={22} />
-            </button>
-          </div>
-        </header>
-        <div className="drawer-rule" aria-hidden="true" />
-        <div className="drawer-content">
-          <p className="drawer-empty">
-            还没有本餐方案。告诉我谁吃、几点吃、想避开什么，安排会从对话里弹到这里。
-          </p>
-          <div className="drawer-actions">
-            <button className="drawer-confirm-button" type="button" disabled>
-              确认安排
-            </button>
-          </div>
-          <p className="drawer-footnote">确认前不会写入库存、家庭记忆或餐食账本。</p>
-        </div>
-      </aside>
-    );
-  }
+  if (!plan && !uiOnly && !orphanedPendingActionId) return null;
 
   const taskCard = uiOnly?.taskCard ?? null;
   const dishes: PlanDishDisplay[] = plan
@@ -146,13 +107,15 @@ export function PlanWorkspace({
         <div className="drawer-rule" aria-hidden="true" />
         <div className="drawer-content">
           <p className="drawer-empty">这次待确认安排已失效，请重新生成方案。</p>
+        </div>
+        <footer className="drawer-footer">
           <div className="drawer-actions">
             <button className="drawer-adjust-button" type="button" disabled={busy} onClick={onAdjust}>
               重新生成方案
             </button>
           </div>
           <p className="drawer-footnote">确认信息失效后不会保存任何任务；重新生成前可以继续和我说。</p>
-        </div>
+        </footer>
       </aside>
     );
   }
@@ -230,7 +193,7 @@ export function PlanWorkspace({
               return (
                 <div className="drawer-shopping-row" key={foodId}>
                   <span className="shopping-check" aria-hidden="true" />
-                  <span className="shopping-name">{foodName(foodId)}</span>
+                  <span className="shopping-name">{displayFoodName(foodId)}</span>
                   <span className="shopping-quantity">{quantity.replace("采购 ", "")}</span>
                   <span className="shopping-status">{shoppingStatusName(status)}</span>
                 </div>
@@ -243,11 +206,17 @@ export function PlanWorkspace({
           <strong>家里已有</strong>
           <span>
             {existing.length > 0
-              ? existing.map((item) => foodName(item.foodId)).join(" · ")
+              ? existing.map((item) => displayFoodName(item.foodId)).join(" · ")
               : "当前库存会优先用于本餐"}
           </span>
         </section>
 
+        {orphanedPendingActionId ? (
+          <p className="drawer-expired" role="alert">这次确认已失效，请重新生成方案。</p>
+        ) : null}
+      </div>
+
+      <footer className="drawer-footer">
         {isPending ? (
           <div className="drawer-actions">
             <button className="drawer-confirm-button" type="button" disabled={busy} onClick={onConfirm}>
@@ -280,12 +249,8 @@ export function PlanWorkspace({
             </button>
           </div>
         )}
-
-        {orphanedPendingActionId ? (
-          <p className="drawer-expired" role="alert">这次确认已失效，请重新生成方案。</p>
-        ) : null}
         <p className="drawer-footnote">确认后抽屉会自动收起；之后可从左侧「本餐状态」再次打开</p>
-      </div>
+      </footer>
     </aside>
   );
 }
@@ -350,7 +315,7 @@ function PlanFacts({
         <p className="drawer-prepared-list">
           实际准备食材：
           {preparedFoods
-            .map((item) => `${foodName(item.foodId)} ${formatGrams(item.quantityG)}g`)
+            .map((item) => `${displayFoodName(item.foodId)} ${formatGrams(item.quantityG)}g`)
             .join(" · ")}
         </p>
       ) : null}
@@ -370,6 +335,40 @@ function PlanFacts({
       </div>
     </section>
   );
+}
+
+const SHORT_FOOD_NAMES: Record<string, string> = {
+  fish: "鱼片",
+  rice: "米饭",
+  egg: "鸡蛋",
+  tofu: "豆腐",
+  cabbage: "白菜",
+  chicken: "鸡腿",
+  "chicken-leg": "鸡腿",
+  shiitake: "香菇",
+  tomato: "番茄",
+  potato: "土豆",
+  spinach: "菠菜",
+  carrot: "胡萝卜",
+  pork: "瘦猪肉",
+  "pork-lean": "瘦猪肉",
+  beef: "牛肉",
+  peanut: "花生",
+  scallion: "葱",
+  garlic: "蒜",
+  cucumber: "黄瓜",
+  millet: "小米",
+  "rice-cooked": "熟米饭",
+  "fish-fillet": "鱼片"
+};
+
+export function displayFoodName(foodId: string): string {
+  const named = foodName(foodId);
+  if (named !== foodId && !/^[a-z0-9-]+$/i.test(named)) {
+    return named;
+  }
+  const key = foodId.replace(/^food-/i, "").toLowerCase();
+  return SHORT_FOOD_NAMES[key] ?? SHORT_FOOD_NAMES[named.toLowerCase()] ?? named;
 }
 
 function statusLabel(status: ActionStatus): string {

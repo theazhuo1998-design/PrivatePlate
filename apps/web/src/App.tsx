@@ -22,7 +22,6 @@ import { ConversationPanel } from "./components/ConversationPanel";
 import { PlanWorkspace } from "./components/PlanWorkspace";
 import { Sidebar, type DrawerTarget, type NavTarget } from "./components/Sidebar";
 import { UtilityDrawer } from "./components/UtilityDrawer";
-import { parseHubSampleState } from "./device-surface";
 import {
   loadConfirmation,
   loadSessionId,
@@ -54,7 +53,7 @@ function confirmationDrawerTarget(uiOnly: UiOnly): DrawerTarget {
   return "plan";
 }
 
-function hasPlanWorkspaceData(
+export function hasPlanWorkspaceData(
   plan: MealPlan | null,
   uiOnly: UiOnly | null,
   orphanedPendingActionId: string | null
@@ -64,7 +63,6 @@ function hasPlanWorkspaceData(
 
 export function App() {
   const [sessionId] = useState(loadSessionId);
-  const [hubSample] = useState(() => parseHubSampleState());
   const [runtime, setRuntime] = useState<RuntimeStatus | null>(null);
   const [context, setContext] = useState<HouseholdContext | null>(null);
   const [dayContext, setDayContext] = useState<DayContext | null>(null);
@@ -88,7 +86,7 @@ export function App() {
   >(null);
   const [actionStatus, setActionStatus] = useState<ActionStatus>("idle");
   const [inbox, setInbox] = useState<InboxSnapshot | null>(null);
-  const [railCollapsed, setRailCollapsed] = useState(false);
+  const [railCollapsed, setRailCollapsed] = useState(true);
   const [drawerTarget, setDrawerTarget] = useState<DrawerTarget | null>(null);
   const [inboxSeen, setInboxSeen] = useState(false);
   /** True only after the user toggles chips; otherwise conversation owns diners. */
@@ -97,9 +95,7 @@ export function App() {
   const [planInfeasible, setPlanInfeasible] = useState(false);
 
   const operable = isOperable(runtime);
-  const hubOperable = hubSample === "offline" ? false : operable;
-  const hubPending =
-    hubSample === "pending" || Boolean(uiOnly) || Boolean(orphanedPendingActionId);
+  const confirmationPending = Boolean(uiOnly) || Boolean(orphanedPendingActionId);
 
   const refreshShell = useCallback(async () => {
     try {
@@ -183,9 +179,9 @@ export function App() {
     }
     return refreshed;
     } finally {
-      if (hubSample !== "loading") setShellLoading(false);
+      setShellLoading(false);
     }
-  }, [hubSample, sessionId]);
+  }, [sessionId]);
 
   useEffect(() => {
     refreshShell().catch((requestError: Error) => setError(requestError.message));
@@ -201,7 +197,9 @@ export function App() {
 
   useEffect(() => {
     const media = window.matchMedia("(max-width: 1100px)");
-    const syncRail = () => setRailCollapsed(media.matches);
+    const syncRail = () => {
+      if (media.matches) setRailCollapsed(true);
+    };
     syncRail();
     media.addEventListener?.("change", syncRail);
     return () => media.removeEventListener?.("change", syncRail);
@@ -228,23 +226,13 @@ export function App() {
     uiOnly,
     orphanedPendingActionId
   );
-  const showPlanWorkspace =
-    drawerTarget === "plan" &&
-    (planWorkspaceAvailable || hubSample === "pending");
+  const showPlanWorkspace = drawerTarget === "plan" && planWorkspaceAvailable;
 
   useEffect(() => {
-    if (hubSample === "pending") setDrawerTarget("plan");
-  }, [hubSample]);
-
-  useEffect(() => {
-    if (
-      drawerTarget === "plan" &&
-      !planWorkspaceAvailable &&
-      hubSample !== "pending"
-    ) {
+    if (drawerTarget === "plan" && !planWorkspaceAvailable) {
       setDrawerTarget(null);
     }
-  }, [drawerTarget, planWorkspaceAvailable, hubSample]);
+  }, [drawerTarget, planWorkspaceAvailable]);
 
   function toggleDiner(memberId: string): void {
     setSelectedDinerIds((current) => {
@@ -270,7 +258,7 @@ export function App() {
       return;
     }
     if (target === "inbox") setInboxSeen(true);
-    if (target === "plan" && !planWorkspaceAvailable && hubSample !== "pending") {
+    if (target === "plan" && !planWorkspaceAvailable) {
       setDrawerTarget(null);
       window.requestAnimationFrame(() => {
         document.getElementById("meal-request")?.focus();
@@ -588,12 +576,12 @@ export function App() {
           actionStatus={actionStatus}
           input={input}
           busy={busy}
-          operable={hubOperable}
+          operable={operable}
           selectedDinerIds={selectedDinerIds}
           members={context?.members ?? []}
           plan={plan}
           memberLookup={memberNames}
-          confirmationPending={hubPending}
+          confirmationPending={confirmationPending}
           onInputChange={setInput}
           onToggleDiner={toggleDiner}
           onOpenInventory={openInventoryDrawer}
@@ -608,7 +596,7 @@ export function App() {
           memberNames={memberNames}
           uiOnly={isMealPlanConfirmation(uiOnly) ? uiOnly : null}
           orphanedPendingActionId={orphanedPendingActionId}
-          actionStatus={hubSample === "pending" ? "pending" : actionStatus}
+          actionStatus={actionStatus}
           busy={busy}
           onClose={() => setDrawerTarget(null)}
           onConfirm={() => void onConfirm()}

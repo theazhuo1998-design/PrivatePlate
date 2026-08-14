@@ -47,16 +47,18 @@ export function Sidebar({
       <div className="rail-brand">
         <SourceIcon className="brand-icon" name="plate" size={28} />
         <span className="brand-name">PrivatePlate</span>
-        <button
-          className="rail-toggle"
-          type="button"
-          onClick={onToggle}
-          aria-label={collapsed ? "展开导航栏" : "收起导航栏"}
-          aria-expanded={!collapsed}
-          title={collapsed ? "展开导航栏" : "收起导航栏"}
-        >
-          <SourceIcon name={collapsed ? "plus" : "x"} size={18} />
-        </button>
+        {collapsed ? null : (
+          <button
+            className="rail-toggle"
+            type="button"
+            onClick={onToggle}
+            aria-label="收起导航栏"
+            aria-expanded
+            title="收起导航栏"
+          >
+            <SourceIcon name="x" size={18} />
+          </button>
+        )}
       </div>
 
       <p className="rail-caption">家庭用餐空间</p>
