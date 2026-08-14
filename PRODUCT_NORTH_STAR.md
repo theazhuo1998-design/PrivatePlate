@@ -1,6 +1,6 @@
 # PrivatePlate Product North Star
 
-> This document is the repository-level north-star guidance for interpreting PrivatePlate's product vision and positioning. It does not rename the product, and it is not an implementation specification.
+> This document is the repository-level north-star guidance for interpreting PrivatePlate's product vision and positioning. “North Star” names the role of this guidance document, not the product. This is not an implementation specification.
 
 ## 1. 产品定义
 
