@@ -12,7 +12,7 @@ runnable PrivatePlate demonstration.
 - `packages/contracts`: shared schemas and stable data contracts.
 - `packages/domain`: household, inventory, day-ledger, generic planning and demo nutrition logic.
 - `packages/evals`: public evaluation runner, schemas, and synthetic cases.
-- `fixtures`: synthetic demo household, foods, templates, and knowledge cards pending provenance approval.
+- `fixtures`: AI-assisted synthetic demo household, foods, templates, knowledge cards, and evaluation cases with documented provenance.
 - `scripts/rag` and `scripts/c1`: local RAG helpers and fixture checksum generation.
 
 ## Explicitly not included
@@ -25,15 +25,22 @@ runnable PrivatePlate demonstration.
 - GOAI internal execution guides, fact-check notes, screenshots, pitch deck, or submission video.
 - Original repository history and internal collaboration files.
 
+## Fixture provenance
+
+The current fixture set was created specifically for the PrivatePlate prototype
+with AI assistance under the project owner's direction. It does not redistribute
+real household records, clinical datasets, measured nutrition databases, or
+third-party food datasets. See `fixtures/PROVENANCE.md` and
+`fixtures/MANIFEST.json`.
+
 ## Publication gate
 
 The repository must remain private until all of the following are true:
 
 1. The owner approves a source-code license.
-2. Every fixture has a provenance record showing it can be redistributed.
-3. The owner approves a separate data license for the approved fixtures.
-4. Secret, path, binary, and large-file scans pass.
-5. `npm ci` and `npm run check` pass from this clean export.
+2. The owner approves a data license for the synthetic fixtures.
+3. Secret, path, binary, and large-file scans pass.
+4. `npm ci` and `npm run check` pass from this clean export.
 
-Files that fail provenance review must be removed or rebuilt from independently
-authored synthetic values before publication.
+Fixture provenance is already documented; the remaining data-side decision is
+the license under which those synthetic fixtures may be redistributed.
