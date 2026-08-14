@@ -123,12 +123,15 @@ current boundary.
 
 ## License
 
-PrivatePlate source code in this repository is licensed under the
+PrivatePlate source code **present in this repository** is licensed under the
 [Apache License 2.0](LICENSE).
 
 AI-assisted synthetic demonstration data under `fixtures/` is dedicated under
 [CC0 1.0 Universal](DATA_LICENSE.md). The full CC0 legal code is included at
 `fixtures/LICENSES/CC0-1.0.txt`.
 
+These licenses do not grant rights to PrivatePlate materials that are not
+included in this repository, such as production datasets, real user data,
+private evaluation assets, model weights, or future private integrations.
 Third-party dependencies and model runtimes keep their own licenses and terms;
 see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
