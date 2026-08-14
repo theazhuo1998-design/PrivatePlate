@@ -1,18 +1,25 @@
-# Fixture provenance review
+# Fixture provenance
 
-The current fixture set is staged for review and is not licensed for public
-redistribution yet.
+The files under `fixtures/` are AI-assisted synthetic demonstration data created
+specifically for the PrivatePlate prototype under the project owner's direction.
+They do not redistribute real household records, clinical datasets, measured
+nutrition databases, or third-party food datasets.
 
-| Path | Current description | Publication status |
+Nutrition and quantity values in these fixtures are engineering estimates for
+demonstration only. They must not be presented as measured nutrition facts,
+medical advice, or production data.
+
+| Path | Provenance | Status |
 | --- | --- | --- |
-| `household/demo-household.json` | Fictional household and inventory | Pending owner confirmation |
-| `foods/*.json` | Small demonstration food and conversion set | Pending independent-source review |
-| `meal-templates/*.json` | Demonstration meal templates | Pending independent-source review |
-| `knowledge/cards.json` | Project-authored demo knowledge cards | Pending owner confirmation |
-| `knowledge/corpus/*.md` | Project-authored RAG corpus | Pending owner confirmation |
-| `evals/*.json` | Synthetic Agent evaluation cases | Pending owner confirmation |
+| `household/demo-household.json` | Fictional household and inventory, AI-assisted synthetic generation | Confirmed |
+| `foods/*.json` | AI-assisted synthetic demo foods and unit-conversion values | Confirmed |
+| `meal-templates/*.json` | AI-assisted synthetic demonstration meal templates | Confirmed |
+| `knowledge/cards.json` | PrivatePlate project-authored, AI-assisted demo knowledge cards | Confirmed |
+| `knowledge/corpus/*.md` | PrivatePlate project-authored demo RAG corpus, AI-assisted where applicable | Confirmed |
+| `evals/*.json` | AI-assisted synthetic Agent evaluation cases | Confirmed |
 
-`MANIFEST.json` records file hashes and currently sets
-`allowsPublicRedistribution` to `false`. A reviewer must either document an
-independently authored source for every file or replace uncertain values with a
-new synthetic set before changing that flag.
+This provenance was confirmed by the project owner on 2026-08-14.
+
+Unless otherwise noted, the fixture set is dedicated under CC0 1.0 Universal and
+may be publicly reused and redistributed under that dedication. See
+`../DATA_LICENSE.md`, `LICENSES/CC0-1.0.txt`, and `MANIFEST.json`.

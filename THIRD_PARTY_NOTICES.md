@@ -1,5 +1,9 @@
 # Third-party notices
 
+PrivatePlate source code in this repository is licensed under Apache-2.0, and the
+synthetic demo fixtures are dedicated separately under CC0-1.0. Those choices do
+not replace or override the licenses of third-party components.
+
 PrivatePlate depends on third-party npm packages listed in `package-lock.json`.
 Their own licenses continue to apply.
 
