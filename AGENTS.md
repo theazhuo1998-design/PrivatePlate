@@ -21,4 +21,12 @@ The current repository is an implementation slice, not the complete product defi
   2. PrivatePlate as the first meal/nutrition vertical,
   3. what this repository actually implements today.
 
+### Downstream agent handoffs
+
+When creating a task packet, implementation brief, or handoff for Grok, Claude, another coding agent, or a new AI session, make the first instruction:
+
+> Read `AGENTS.md` and `PRODUCT_NORTH_STAR.md` before interpreting the product or proposing changes.
+
+Do not rely on a paraphrased second-hand summary of the north star when the repository files are available.
+
 If repository documents conflict on product interpretation, treat `PRODUCT_NORTH_STAR.md` as the canonical repository-level product source unless a direct user instruction overrides it.
